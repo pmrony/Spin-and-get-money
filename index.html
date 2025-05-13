@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>টাকার চাকা</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        body {
+            font-family: 'Arial', sans-serif; display: flex; flex-direction: column;
+            align-items: center; min-height: 100vh; margin: 0;
+            background-color: #f0f0f0; color: #333; text-align: center;
+            padding: 10px 10px 30px 10px; box-sizing: border-box;
+        }
+        .container {
+            background-color: #fff; padding: 20px; border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2); max-width: 400px;
+            width: 100%; margin-top: 20px;
+        }
+        h1 { color: #2c3e50; margin-bottom: 20px; font-size: 1.8em; }
+        .wheel-container {
+            position: relative; width: 280px; height: 280px;
+            margin: 30px auto;
+        }
+        #wheel {
+            width: 100%; height: 100%; border-radius: 50%;
+            position: relative; overflow: hidden;
+            transition: transform 5s cubic-bezier(0.25, 0.1, 0.25, 1);
+            border: 5px solid #34495e;
+            box-shadow: 0 0 15px rgba(0,0,0,0.3) inset, 0 0 10px rgba(0,0,0,0.2);
+            background: conic-gradient(
+                from -45deg,
+                #f1c40f 0deg 90deg,   /* 40 Taka (Yellow) */
+                #2ecc71 90deg 180deg,  /* 60 Taka (Green) */
+                #3498db 180deg 270deg, /* 80 Taka (Blue) */
+                #9b59b6 270deg 360deg  /* 100 Taka (Purple) */
+            );
+        }
+        .prize-label {
+            position: absolute; top: 50%; left: 50%;
+            width: auto; padding: 5px 8px; font-weight: bold; font-size: 1.4em;
+            color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+            pointer-events: none; text-align: center; white-space: nowrap;
+            transform-origin: center center;
+        }
+        #pointer {
+            width: 0; height: 0; border-left: 20px solid transparent;
+            border-right: 20px solid transparent; border-top: 35px solid #c0392b;
+            position: absolute; top: -15px; left: 50%;
+            transform: translateX(-50%); z-index: 10;
+            filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
+        }
+        button {
+            background-color: #3498db; color: white; border: none; padding: 12px 25px;
+            text-align: center; text-decoration: none; display: inline-block;
+            font-size: 16px; margin: 10px 5px; cursor: pointer; border-radius: 8px;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            box-shadow: 0 4px 6px rgba(50,50,93,.11), 0 1px 3px rgba(0,0,0,.08);
+        }
+        button:hover { background-color: #2980b9; }
+        button:active { transform: translateY(1px); box-shadow: 0 2px 3px rgba(50,50,93,.11), 0 1px 2px rgba(0,0,0,.08); }
+        button:disabled { background-color: #bdc3c7; cursor: not-allowed; }
+        #result, #shareSection, #bikashSection { margin-top: 25px; padding: 15px; background-color: #ecf0f1; border-radius: 8px; }
+        #bikashSection input[type="tel"] { padding: 10px; margin-right: 8px; border: 1px solid #bdc3c7; border-radius: 5px; font-size: 16px; width: calc(70% - 10px); }
+        #bikashSection button { width: calc(30% - 10px); padding: 10px 0; }
+
+        .social-actions { display: flex; justify-content: space-between; align-items: center; max-width: 400px; width: 100%; margin: 20px auto 15px auto; padding: 0 15px; box-sizing: border-box; }
+        .social-button { background: none; border: none; font-size: 1.8em; cursor: pointer; color: #7f8c8d; transition: color 0.3s ease, transform 0.2s ease; padding: 5px; margin: 0; box-shadow: none; }
+        .social-button:hover { color: #34495e; transform: scale(1.1); }
+        #likeButton.liked { color: #e74c3c; }
+        #commentIcon { color: #3498db; }
+        #commentIcon:hover { color: #2980b9; }
+        .comments-section { max-width: 400px; width: 100%; margin: 15px auto; padding: 15px; background-color: #fff; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); text-align: left; }
+        .comments-section h3 { margin-top: 0; margin-bottom: 15px; color: #34495e; border-bottom: 1px solid #ecf0f1; padding-bottom: 10px; }
+        .comment-item { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #f0f0f0; }
+        .comment-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+        .comment-avatar img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 1px solid #ddd; }
+        .comment-content { flex: 1; }
+        .comment-content strong { color: #2c3e50; font-weight: 600; display: block; margin-bottom: 3px; }
+        .comment-content p { margin: 0 0 5px 0; color: #555; font-size: 0.95em; line-height: 1.4; }
+        .comment-time { font-size: 0.8em; color: #95a5a6; }
+
+        @media (max-width: 350px) {
+            h1 { font-size: 1.5em; }
+            .wheel-container { width: 240px; height: 240px; }
+            #pointer { border-left-width: 15px; border-right-width: 15px; border-top-width: 25px; top: -10px;}
+            .prize-label { font-size: 1.2em; }
+            #bikashSection input[type="tel"], #bikashSection button { width: 100%; margin-bottom: 10px; margin-right: 0; }
+            .social-button { font-size: 1.6em; }
+            .comments-section { padding: 10px; }
+            .comment-avatar img { width: 35px; height: 35px; }
+            .comment-item { gap: 8px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>টাকার চাকা ঘোরান!</h1>
+        <div class="wheel-container">
+            <div id="wheel"></div>
+            <div id="pointer"></div>
+        </div>
+        <button id="spinButton">চাকা ঘোরান</button>
+        <div id="result" style="display:none;"></div>
+        <div id="shareSection" style="display:none;">
+            <p id="shareMessage"></p>
+            <button id="shareButton">বন্ধুদের শেয়ার করুন</button>
+        </div>
+        <div id="bikashSection" style="display:none;">
+            <p>আপনার পুরস্কার নিতে, নিচের বক্সে আপনার বিকাশ নাম্বার দিন এবং সেন্ড বাটনে ক্লিক করুন:</p>
+            <input type="tel" id="bikashNumber" placeholder="01XXXXXXXXX" pattern="01[3-9]\d{8}">
+            <button id="sendBikashButton">সেন্ড করুন</button>
+        </div>
+    </div>
+
+    <div class="social-actions">
+        <button id="likeButton" class="social-button"><i class="fas fa-heart"></i></button>
+        <button id="commentIcon" class="social-button"><i class="fas fa-comment-dots"></i></button>
+    </div>
+
+    <div class="comments-section">
+        <h3>সাম্প্রতিক মন্তব্যসমূহ</h3>
+        <div class="comment-item">
+            <div class="comment-avatar"><img src="https://i.postimg.cc/zGhpcLrJ/Flux-Dev-A-25yearold-Bangladeshi-boys-passportsized-photo-with-1.jpg" alt="মোঃ আরিফুল ইসলাম Avatar"></div>
+            <div class="comment-content"><strong>মোঃ আরিফুল ইসলাম</strong><p>এডমিন কে ধন্যবাদ, আমি ৮০ টাকা পেয়েছি। সবাই চেষ্টা করুন।</p><span class="comment-time">৫ মিনিট আগে</span></div>
+        </div>
+        <div class="comment-item">
+            <div class="comment-avatar"><img src="https://i.postimg.cc/s26cB5P4/cee365e3-e6d3-4b23-b80d-a3b3c9c70f2a.jpg" alt="সুমি আক্তার Avatar"></div>
+            <div class="comment-content"><strong>সুমি আক্তার</strong><p>আমি প্রথমে বিশ্বাস করিনি, কিন্তু আসলেই টাকা পেলাম! ৬০ টাকা বিকাশ এ এসেছে। 😍</p><span class="comment-time">২৫ মিনিট আগে</span></div>
+        </div>
+        <div class="comment-item">
+            <div class="comment-avatar"><img src="https://i.postimg.cc/gkr7z3K6/Flux-Dev-A-25yearold-young-man-standing-confidently-in-a-wellf-3.jpg" alt="Rahman Khan Avatar"></div>
+            <div class="comment-content"><strong>Rahman Khan</strong><p>Thanks admin! Got 100 Taka. Shared with friends.</p><span class="comment-time">১ ঘন্টা আগে</span></div>
+        </div>
+         <div class="comment-item">
+            <div class="comment-avatar"><img src="https://i.postimg.cc/ZqP77HJX/1747083315660.jpg" alt="নাসরিন সুলতানা Avatar"></div>
+            <div class="comment-content"><strong>নাসরিন সুলতানা</strong><p>খুবই মজার খেলা। ৪০ টাকা জিতলাম। ধন্যবাদ।</p><span class="comment-time">২ ঘন্টা আগে</span></div>
+        </div>
+    </div>
+
+    <script>
+        const wheel = document.getElementById('wheel');
+        const spinButton = document.getElementById('spinButton');
+        const resultDiv = document.getElementById('result');
+        const shareSection = document.getElementById('shareSection');
+        const shareMessagePara = document.getElementById('shareMessage');
+        const shareButton = document.getElementById('shareButton');
+        const bikashSection = document.getElementById('bikashSection');
+        const bikashNumberInput = document.getElementById('bikashNumber');
+        const sendBikashButton = document.getElementById('sendBikashButton');
+        const likeButton = document.getElementById('likeButton');
+        const commentIcon = document.getElementById('commentIcon');
+
+        const prizes = [
+            { value: 40, label: "৪০ টাকা" }, // Center at 0 deg
+            { value: 60, label: "৬০ টাকা" }, // Center at 90 deg
+            { value: 80, label: "৮০ টাকা" }, // Center at 180 deg
+            { value: 100, label: "১০০ টাকা" } // Center at 270 deg
+        ];
+        const numSegments = prizes.length;
+        const anglePerSegment = 360 / numSegments; // 90 deg
+        let currentRotation = 0;
+        let wonPrize = null;
+
+        function setupWheelLabels() {
+            wheel.innerHTML = '';
+
+            if (wheel.offsetWidth > 0) {
+                const wheelRadius = wheel.offsetWidth / 2;
+                // === UPDATED PARAMETERS ===
+                const labelRadiusFactor = 0.60; // Reduced from 0.68 to bring labels inward
+                const horizontalOffset = 0;    // Set to 0 for no tangential shift with correct angles
+
+                const translateDistance = wheelRadius * labelRadiusFactor;
+
+                prizes.forEach((prize, index) => {
+                    const labelDiv = document.createElement('div');
+                    labelDiv.classList.add('prize-label');
+                    labelDiv.textContent = prize.value + " ৳";
+
+                    // === UPDATED ANGLE CALCULATION ===
+                    // Segments: 0: [-45,45], 1:[45,135], 2:[135,225], 3:[225,315] (due to conic-gradient from -45deg)
+                    // Center angles for labels: 0deg, 90deg, 180deg, 270deg
+                    const angle = index * anglePerSegment;
+                    const finalRotationAngle = -angle; // To make text horizontal
+
+                    labelDiv.style.transform = `
+                        translateX(-50%) translateY(-50%)
+                        rotate(${angle}deg)
+                        translateY(-${translateDistance}px)
+                        translateX(${horizontalOffset}px)
+                        rotate(${finalRotationAngle}deg)
+                    `;
+                    wheel.appendChild(labelDiv);
+                });
+            } else {
+                console.warn("Wheel dimensions not ready. Retrying label setup.");
+                setTimeout(setupWheelLabels, 50);
+            }
+        }
+
+        spinButton.addEventListener('click', () => {
+             if (spinButton.disabled) return;
+             spinButton.disabled = true;
+             resultDiv.style.display = 'none'; shareSection.style.display = 'none'; bikashSection.style.display = 'none';
+
+             const randomIndex = Math.floor(Math.random() * prizes.length);
+             wonPrize = prizes[randomIndex];
+
+             // Target rotation needs to bring the center of the won segment to the top (0 deg pointer)
+             // If prize index 0 (40 Taka, center 0 deg) wins, target rotation is 0.
+             // If prize index 1 (60 Taka, center 90 deg) wins, target rotation is -90.
+             const targetRotation = -(randomIndex * anglePerSegment);
+             const randomSpins = 5 + Math.floor(Math.random() * 3);
+             const finalRotation = (randomSpins * 360) + targetRotation;
+             currentRotation = finalRotation;
+             wheel.style.transform = `rotate(${currentRotation}deg)`;
+
+             setTimeout(() => {
+                 resultDiv.textContent = `অভিনন্দন! আপনি ${wonPrize.label} জিতেছেন।`;
+                 resultDiv.style.display = 'block';
+                 shareMessagePara.textContent = `আপনার ${wonPrize.label} পুরস্কারটি পেতে, দয়া করে প্রথমে ৫ জন বন্ধুকে এই গেমটি শেয়ার করুন।`;
+                 shareSection.style.display = 'block';
+             }, 5000);
+        });
+
+        shareButton.addEventListener('click', () => {
+            const shareText = `আমি টাকার চাকা ঘুরিয়ে ${wonPrize.label} জিতেছি! আপনিও জিততে পারেন। এখনই খেলুন এই লিংকে:`;
+            const shareUrl = window.location.href;
+            if (navigator.share) {
+                navigator.share({ title: 'টাকার চাকা - পুরস্কার জিতুন!', text: shareText, url: shareUrl })
+                .then(() => { console.log('Thanks for sharing!'); scheduleBikashBox(); })
+                .catch((err) => { console.error('Error sharing', err); scheduleBikashBox(); });
+            } else {
+                alert("শেয়ার করতে সমস্যা হচ্ছে। লিঙ্কটি কপি করে শেয়ার করুন:\n" + shareUrl + "\n" + shareText);
+                scheduleBikashBox();
+            }
+        });
+
+        function scheduleBikashBox() {
+            setTimeout(() => {
+                bikashSection.style.display = 'block';
+                bikashNumberInput.focus();
+            }, 10000);
+        }
+
+        sendBikashButton.addEventListener('click', () => {
+            const bikashNum = bikashNumberInput.value.trim();
+            if (/^01[3-9]\d{8}$/.test(bikashNum)) {
+                window.location.href = 'https://www.effectiveratecpm.com/hpduy20d?key=e38d3d108db3a3f973b6fad4d84d4121';
+            } else {
+                alert('দয়া করে সঠিক ১১ সংখ্যার বিকাশ নাম্বার দিন (যেমন: 01xxxxxxxxx)।');
+            }
+        });
+
+        likeButton.addEventListener('click', () => { likeButton.classList.toggle('liked'); });
+        commentIcon.addEventListener('click', () => { document.querySelector('.comments-section').scrollIntoView({ behavior: 'smooth' }); });
+
+        function debounce(func, wait, immediate) {
+            var timeout;
+            return function() {
+                var context = this, args = arguments;
+                var later = function() { timeout = null; if (!immediate) func.apply(context, args); };
+                var callNow = immediate && !timeout;
+                clearTimeout(timeout); timeout = setTimeout(later, wait);
+                if (callNow) func.apply(context, args);
+            };
+        };
+        var recalculateWheel = debounce(function() { setupWheelLabels(); }, 250);
+        window.addEventListener('DOMContentLoaded', () => { setTimeout(setupWheelLabels, 0); });
+        window.addEventListener('resize', recalculateWheel);
+    </script>
+</body>
+</html>
